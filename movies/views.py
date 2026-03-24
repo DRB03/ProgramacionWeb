@@ -3,6 +3,11 @@ from django.http import HttpResponse
 from movies.models import Movie, MovieReview
 from movies.forms import MovieReviewForm
 
+def all_movies(request):
+    movies= Movie.objects.all()
+    context = {  'objetos':movies, 'message':'welcome' }
+    return render(request,'movies/allmovies.html', context=context )
+
 # Create your views here.
 def index(request):
     movies = Movie.objects.all()
