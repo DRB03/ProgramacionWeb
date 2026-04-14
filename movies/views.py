@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from movies.models import Movie, MovieReview
-from movies.forms import MovieReviewForm
+from django.http import HttpResponse, HttpResponseRedirect
+from movies.models import Movie, MovieReview, MovieComment
+from movies.forms import MovieReviewForm, MovieCommentForm
 
 def all_movies(request):
     movies= Movie.objects.all()
@@ -23,7 +23,26 @@ def movie(request, movie_id):
 def movie_reviews(request, movie_id):
     movie = Movie.objects.get(id=movie_id)
     return render(request,'movies/reviews.html', context={'movie':movie } )
-    
+
+def add_comment(request, movie_id):
+    form = None
+    movie = Movie.objects.get(id=movie_id)
+    if request.method == 'POST':
+        form = MovieCommentForm(request.POST)
+        if form.is_valid():
+            review = form.cleaned_data['review']
+            movie_comment = MovieComment(
+                movie=movie,
+                comment_text=review,
+                user=request.user)
+            movie_comment.save()
+            return HttpResponseRedirect('/movies/')
+    else:
+        form = MovieCommentForm()
+        return render(request,
+                      'movies/movie_comment_form.html',
+                        {'form': form, 'movie':movie})
+
 def add_review(request, movie_id):
     form = None
     movie = Movie.objects.get(id=movie_id)

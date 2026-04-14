@@ -46,6 +46,14 @@ class MovieCredit(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
 
+class MovieComment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    # Conservamos tu campo numérico
+    like = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)], null=True, blank=True)
+    # AGREGAMOS EL CAMPO PARA EL TEXTO:
+    comment_text = models.TextField(blank=True, null=True)
+
 
 class MovieReview(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
